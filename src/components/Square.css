@@ -1,0 +1,16 @@
+article{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 9vh;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 3px #000 inset;
+}
+.clicked{
+    border: 3px solid #000
+}
+.found{
+    border: 3px solid #ad73e4;
+}

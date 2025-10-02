@@ -18,11 +18,13 @@ const randColor = (): string => {
 
 function App() {
   const [boxes, setBoxes] = useState<BoxType[]>(data);
-  const [guessColor, setGuessColor] = useState<string>("")
-  const [start, setStart] = useState<boolean>(true)
+  const [guessColor, setGuessColor] = useState<string>("");
+  const [start, setStart] = useState<boolean>(true);
+  const [count, setCount] = useState<number>(0);
 
-  const clickHandler = (id:string){
-    boxes.map
+  const clickHandler = (id:string)=>{
+    
+    setBoxes(boxes.map(prev => prev.id === id && !prev.clicked? {...prev, clicked: !prev.clicked} : prev ))
   }
 
   useEffect(() => {

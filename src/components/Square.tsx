@@ -14,7 +14,7 @@ const Square: React.FC<SquarProps> = ({id, bgColor, clicked, found, clickFn}) =>
     <div>
       <article 
       style={{background: bgColor}}
-      className={found? "found": clicked ? "clicked" : ""}
+      className={found? "found": clicked ? "clicked": ""}
       id={id}
       onClick={()=>clickFn(id)}
       >

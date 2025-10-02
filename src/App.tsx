@@ -24,28 +24,31 @@ function App() {
   const [gamestatus, SetGameStatus] = useState<boolean>(true);
 
   const clickHandler = (id: string) => {
-    if (!gamestatus)return;
-    if (!clickedBox.includes(id)) setClickedBox(prev => [...prev, id]);
-    setBoxes(boxes.map(prev =>
-      prev.id === id && !prev.clicked && guessColor === prev.bgColor
-        ? { ...prev, clicked: !prev.clicked, found: !prev.found}
-         : prev.id === id && !prev.clicked 
-         ?{...prev, clicked: !prev.clicked}
-         :prev))
-    SetGameStatus(prev => boxes.find(b=>b.found===true)? !prev : prev);
+    if (!gamestatus) return;
+    if (clickedBox.includes(id)) return;
+    setClickedBox(prev => [...prev, id]);
+    setBoxes(prevBoxes =>
+      prevBoxes.map(box =>
+        box.id === id && guessColor === box.bgColor
+          ? { ...box, clicked: true, found: true }
+          : box.id === id
+            ? { ...box, clicked: true }
+            : box
+      )
+    );
     const isMatch = boxes.find(b => b.id === id && b.bgColor === guessColor)?.bgColor;
-    
-    console.log("kattintott szin? ", isMatch, "kitalálandó szin: ", guessColor) 
-    if(isMatch) SetGameStatus(false)
+    console.log("kattintott szin? ", isMatch, "kitalálandó szin: ", guessColor);
+    if (isMatch) SetGameStatus(false);
   }
 
   useEffect(() => {
-    const colors = Array.from({ length: COUNT }, () => randColor())
+    const colors = Array.from({ length: COUNT }, () => randColor());
     setGuessColor(colors[Math.floor(Math.random() * COUNT)]);
+    setBoxes(colors.map((color, i) => ({id: `b${i + 1}`, bgColor: color, clicked: false, found: false,})));
+    setClickedBox([]);
+    SetGameStatus(true);
     console.log("A useEffect elindított engem rendereléskor.");
-    setBoxes(prev => prev.map((_, i) => ({ id: `b${i + 1}`, bgColor: colors[i], clicked: false, found: false, })))
-    console.log(boxes);
-  }, [start])
+  }, [start]);
 
   return (
     <>
@@ -53,16 +56,20 @@ function App() {
         <h1>Találd ki a színt!</h1>
         <h3>A szín kódja: <span>{guessColor}</span></h3>
         <h3>Tippek száma: <span>{clickedBox.length}</span></h3>
-        <h3>Gratuláció helye</h3>
+        {!gamestatus ? <h3>Gratulálok, eltalálta a színt!</h3>:""}
       </header>
       <main>
         <section>
           {boxes.map((b, i) => <Square key={i + 1} id={b.id} bgColor={b.bgColor} clicked={b.clicked} found={b.found} clickFn={() => clickHandler(b.id)} />)}
         </section>
         <button
-          onClick={() => setStart(prev => !prev)}
+          onClick={() => {
+            setStart(prev => !prev);
+            setClickedBox([]);
+          }}
         >
-          Újrakezdés</button>
+          Újrakezdés
+        </button>
       </main>
     </>
   )
